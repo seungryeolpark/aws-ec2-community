@@ -1,0 +1,56 @@
+<!Doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>
+  <div th:replace="./fragment/loginHeader.html :: CSS,JS"></div>
+  <div th:replace="./fragment/mainHeader.html :: sweetalert"></div>
+  <style>
+    .container {
+      margin-top: 100px;
+    }
+  </style>
+  <title>커뮤니티</title>
+</head>
+<body>
+<div th:replace="./fragment/mainHeader.html :: header"></div>
+<div class="container">
+  <span th:utext="#{leave.message}"></span>
+  <div class="row">
+    <div class="col-6">
+      <button type="submit" id="deleteMember" th:text="#{leave.delete}" class="btn btn-info"></button>
+    </div>
+    <div class="col-6">
+      <a th:href="@{/}">
+        <button type="button" th:text="#{leave.main}" class="btn btn-info"></button>
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+  $( '#deleteMember' ).click(function() {
+                        var token = $( "meta[name= '_csrf']" ).attr('content');
+                        var header = $( "meta[name='_csrf_header']").attr("content");
+
+                        $.ajax({
+                            url : "/info",
+                            method : "DELETE",
+                            beforeSend : function(xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            success : function(result) {
+                                location.replace('/');
+                            },
+                            error : function(xhr, status, error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: xhr.responseJSON.code,
+                                    text: xhr.responseJSON.message
+                                  });
+                            }
+                        });
+                  });
+    </script>
+</script>
+
+</body>
+</html>

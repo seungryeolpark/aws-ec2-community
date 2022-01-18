@@ -1,0 +1,63 @@
+<!Doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>
+  <div th:replace="./fragment/loginHeader.html :: CSS,JS"></div>
+  <div th:replace="./fragment/mainHeader.html :: sweetalert"></div>
+  <style>
+    .container {
+      margin-top: 100px;
+    }
+  </style>
+  <title>커뮤니티</title>
+</head>
+<body>
+<div th:replace="./fragment/mainHeader.html :: header"></div>
+<div class="container">
+  <th:block th:if="${#authorization.expr('isAuthenticated()')}">
+    <!-- My Board -->
+    <div>
+      <h4 th:text="#{info.board}"></h4>
+      <div class="well">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="boardDTO : ${boardDtoList}">
+            <td th:text="${boardDTO.id}"></td>
+            <td ><a class="text-dark" th:text="${boardDTO.title}" th:href="@{|/board/getBoard/${boardDTO.id}|}"></a></td>
+            <td th:text="${boardDTO.nickname}"></td>
+            <td th:text="${boardDTO.createTime}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <label for="put_nickname" th:text="#{label.nickname}"></label>
+    <input type="text" id="put_nickname" th:value="${#authentication.getPrincipal().getNickname()}">
+    <div class="row">
+      <div class="col-4">
+        <button type="submit" id="putNickname" th:text="#{info.edit}" class="btn btn-info"></button>
+      </div>
+      <div class="col-4">
+        <a th:href="@{/login/editPassword}">
+          <button type="button" th:text="#{info.editPassword}" class="btn btn-info"></button>
+        </a>
+      </div>
+      <div class="col-4">
+        <a th:href="@{/}">
+          <button type="button" th:text="#{info.main}" class="btn btn-info"></button>
+        </a>
+      </div>
+    </div>
+    <script type="text/javascript" src="/js/login/info.js"></script>
+  </th:block>
+</div>
+</body>
+</html>

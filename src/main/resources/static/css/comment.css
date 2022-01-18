@@ -1,0 +1,14 @@
+pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+        overflow: auto;
+}
+
+#content {
+        margin-top: 20px;
+
+    }
+
+.comment {
+        margin-top: 50px;
+}

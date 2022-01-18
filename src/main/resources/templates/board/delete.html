@@ -1,0 +1,52 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>-->
+<!--  <div th:replace="./fragment/mainHeader.html :: sweetalert"></div>-->
+
+<!--  <script th:src="@{/ckeditor5/build/ckeditor.js}"></script>-->
+
+<!--  &lt;!&ndash; inline &ndash;&gt;-->
+<!--  <style>-->
+<!--    .container {-->
+<!--      margin-top: 100px;-->
+<!--    }-->
+<!--  </style>-->
+
+<!--  <th:block th:if="${errorMessage} != null">-->
+<!--    <script>-->
+<!--        $().ready(function () {-->
+<!--          Swal.fire({-->
+<!--            icon: 'error',-->
+<!--            text: '[[${errorMessage}]]',-->
+<!--          });-->
+<!--        });-->
+<!--    </script>-->
+<!--  </th:block>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:replace="./fragment/mainHeader.html :: header"></div>-->
+<!--<div class="container">-->
+<!--  <form th:action="@{/board/delete}" method="post" th:object="${deleteBoardDto}">-->
+<!--    <input type="hidden" name="boardId" th:value="${boardId}">-->
+
+
+<!--    <th:block th:if="${boardEmail} == null">-->
+<!--      <div class="row">-->
+<!--        <div class="col-2">-->
+<!--          <label for="password" th:text="#{label.password}"></label>-->
+<!--        </div>-->
+<!--        <div class="col-4">-->
+<!--          <input type="password" id="password" th:field="*{password}" class="form-control">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </th:block>-->
+
+
+<!--    <div class="float-right">-->
+<!--      <button type="submit" class="btn btn-primary" th:text="#{button.delete}"></button>-->
+<!--    </div>-->
+<!--  </form>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

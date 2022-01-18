@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>403대 에러</title>
+</head>
+<body>
+<th:block th:if="${errorMessage} == null">
+    페이지 권한이 없습니다
+</th:block>
+<th:block th:unless="${errorMessage} == null">
+    <span th:text="${errorMessage}"></span>
+</th:block>
+</body>
+</html>

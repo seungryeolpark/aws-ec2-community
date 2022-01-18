@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>
+    <div th:replace="./fragment/mainHeader.html :: sweetalert"></div>
+
+    <script type="text/javascript" src="/js/board/getBoardImage.js"></script>
+    <link th:href="@{/css/comment.css}" rel="stylesheet">
+  <!-- inline -->
+  <!-- css -->
+  <style>
+    .container {
+      margin-top: 100px;
+    }
+  </style>
+  <!-- js -->
+</head>
+<body>
+  <div th:replace="./fragment/mainHeader.html :: header"></div>
+  <!-- board -->
+  <div class="container" th:object="${getBoardDto}">
+      <input type="text" id="title" th:field="*{title}" class="form-control" readonly>
+      <input type="text" id="nickname" th:field="*{nickname}" class="form-control" readonly>
+
+      <div class="float-right">
+          <th:block th:if="${getBoardDto.email} == null">
+              <button class="btn btn-primary">
+                  <a class="text-dark" th:href="@{|/board/edit/${getBoardDto.id}|}" th:text="#{getBoard.edit}"></a>
+              </button>
+              <button class="btn btn-danger">
+                  <a class="text-dark" th:href="@{|/board/delete/${getBoardDto.id}|}" th:text="#{getBoard.delete}"></a>
+              </button>
+          </th:block>
+          <th:blcok th:unless="${getBoardDto.email} == null">
+              <th:block th:if="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                  <th:block th:if="${#authentication.getPrincipal().getEmail()} == ${getBoardDto.email}">
+                      <button class="btn btn-primary">
+                          <a class="text-dark" th:href="@{|/board/edit/${getBoardDto.id}|}" th:text="#{getBoard.edit}"></a>
+                      </button>
+                      <button class="btn btn-danger">
+                          <a class="text-dark" th:href="@{|/board/delete/${getBoardDto.id}|}" th:text="#{getBoard.delete}"></a>
+                      </button>
+                  </th:block>
+              </th:block>
+          </th:blcok>
+      </div>
+
+      <div id="content" th:utext="*{content}"></div>
+
+      <!-- commentList -->
+      <div class="comment-list" style="margin-top: 20px;">
+          <th:block th:each="comment : ${commentList}">
+              <th:block th:if="${comment.deleteStatus.toString == 'Deleted'}">
+                  <div th:id="|comment_${comment.id}|" class="border border-dark" style="margin-top: 10px;">
+                      <div style="margin-top: 10px; margin-bottom: 10px;">
+                          <span th:text="#{getBoard.comment.delete.message}"></span>
+                      </div>
+                  </div>
+              </th:block>
+              <th:block th:if="${comment.deleteStatus.toString == 'Stored'}">
+                  <div th:id="|comment_${comment.id}|" class="border border-dark" style="margin-top: 10px;">
+                      <div class="border-bottom border-secondary">
+                          <div class="row justify-content-between">
+                              <div class="col-4">
+                                  <span th:text="${comment.nickname}"></span>
+                              </div>
+                              <div class="col-2">
+                                  <!-- nestedComment form add-->
+                                  <a name="reply" style="cursor: pointer;" class="text-dark" th:data-id="${comment.id}" th:data-depth="${comment.depth}">
+                                      <span th:text="#{getBoard.nestedComment.link}"></span>
+                                  </a>
+                                  <!-- comment put -->
+                                  <th:block th:if="${comment.email} == null">
+                                      <a name="edit" style="cursor: pointer;" class="text-dark" th:data-id="${comment.id}" th:data-depth="${comment.depth}">
+                                          <span th:text="#{getBoard.comment.put}"></span>
+                                      </a>
+                                  </th:block>
+                                  <th:block th:unless="${comment.email} == null">
+                                      <th:block th:if="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                                          <th:block th:if="${#authentication.getPrincipal().getEmail()} == ${comment.email}">
+                                              <a name="edit" style="cursor: pointer;" class="text-dark" th:data-id="${comment.id}" th:data-depth="${comment.depth}">
+                                                  <span th:text="#{getBoard.comment.put}"></span>
+                                              </a>
+                                          </th:block>
+                                      </th:block>
+                                  </th:block>
+                                  <!-- comment delete -->
+                                  <th:block th:if="${comment.email} == null">
+                                      <a name="delete" style="cursor: pointer;" class="text-dark" th:data-id="${comment.id}" th:data-login="N">
+                                          <span th:text="#{getBoard.comment.delete}"></span>
+                                      </a>
+                                  </th:block>
+                                  <th:blcok th:unless="${comment.email} == null">
+                                      <th:blcok th:if="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                                          <th:block th:if="${#authentication.getPrincipal().getEmail()} == ${comment.email}">
+                                              <a name="delete" style="cursor: pointer;" class="text-dark" th:data-id="${comment.id}" th:data-login="Y">
+                                                  <span th:text="#{getBoard.comment.delete}"></span>
+                                              </a>
+                                          </th:block>
+                                      </th:blcok>
+                                  </th:blcok>
+                              </div>
+                          </div>
+                      </div>
+                      <div><pre th:text="${comment.content}" style="white-space: pre-wrap"></pre></div>
+                  </div>
+              </th:block>
+              <!-- nestedComment form -->
+              <div th:id="|nestedCommentForm_${comment.id}|" style="display: none; margin-top: 10px;">
+                  <form th:action="@{|/comment/${boardId}/${comment.id}|}" method="post" th:object="${commentDto}">
+                      <th:block th:if="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                          <div class="row">
+                              <div class="col-4">
+                                  <input type="text" class="form-control form-control-sm" readonly
+                                         th:value="${#authentication.getPrincipal().getNickname()}">
+                              </div>
+                          </div>
+                      </th:block>
+                      <th:block th:unless="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                          <div class="row">
+                              <div class="col-4">
+                                  <label for="nestedComment-nickname" th:text="#{getBoard.comment.nickname}"></label>
+                                  <input type="text" id="nestedComment-nickname" class="form-control form-control-sm" th:field="*{nickname}" required>
+                              </div>
+                              <div class="col-4">
+                                  <label for="nestedComment-password" th:text="#{getBoard.comment.password}"></label>
+                                  <input type="text" id="nestedComment-password" class="form-control form-control-sm" th:field="*{password}" required>
+                              </div>
+                          </div>
+                      </th:block>
+                      <div class="row" style="margin-top: 10px;">
+                          <div class="col-10">
+                              <textarea id="nestedComment-content" class="form-control" rows="2" style="resize: none;" required th:field="*{content}"></textarea>
+                          </div>
+                          <div class="col-2">
+                              <button type="submit" th:text="#{getBoard.comment.submit}" class="btn btn-lm btn-info"></button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              <!-- putComment form -->
+              <div th:id="|putCommentForm_${comment.id}|" style="display: none; margin-top: 10px;">
+                  <th:block th:if="${comment.email} == null">
+                      <div class="row">
+                          <div class="col-4">
+                              <label th:for="|putComment_${comment.id}_password|" th:text="#{getBoard.comment.password}"></label>
+                              <input type="text" th:id="|putComment_password_${comment.id}|" name="password" class="form-control form-control-sm" required />
+                          </div>
+                      </div>
+                  </th:block>
+                  <div class="row">
+                      <div class="col-10" style="margin-top: 10px;">
+                          <textarea th:id="|putComment_content_${comment.id}|" name="content" class="form-control" rows="2" style="resize: none;" required></textarea>
+                      </div>
+                      <div class="col-2">
+                          <button name="putComment_submit" th:data-id="${comment.id}" th:text="#{getBoard.comment.submit}" class="btn btn-lm btn-info"
+                                  style="margin: 10px 20px 0px 0px;"></button>
+                      </div>
+                  </div>
+              </div>
+              <script th:inline="javascript">
+                  var depth = 20 * [[ ${comment.depth} ]];
+                  var id = [[ ${comment.id} ]];
+                  $( '#comment_' + id ).css( 'margin-left', depth );
+              </script>
+          </th:block>
+      </div>
+      <script type="text/javascript" src="/js/board/getBoardComment.js"></script>
+      <!-- commentList pagination -->
+      <div>
+          <ul class="pagination">
+              <th:block th:if="${commentPageDto.page} > 0">
+                  <li class="page-item"><a class="page-link" th:text="#{getBoard.comment.pagination.start}" th:href="@{|/board/getBoard/${boardId}/0|}"></a></li>
+                  <li class="page-item"><a class="page-link" th:text="#{getBoard.comment.pagination.prev}" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.page - 4}|}"></a></li>
+              </th:block>
+              <th:block th:if="${commentPageDto.page} <= ${commentPageDto.total}">
+                  <li class="page-item"><a class="page-link" th:text="${commentPageDto.page}+1" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.page}|}"></a></li>
+              </th:block>
+              <th:block th:if="${commentPageDto.page}+1 <= ${commentPageDto.total}">
+                  <li class="page-item"><a class="page-link" th:text="${commentPageDto.page}+2" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.page + 1}|}"></a></li>
+              </th:block>
+              <th:block th:if="${commentPageDto.page}+2 <= ${commentPageDto.total}">
+                  <li class="page-item"><a class="page-link" th:text="${commentPageDto.page}+3" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.page + 2}|}"></a></li>
+              </th:block>
+              <th:block th:if="${commentPageDto.page}+3 <= ${commentPageDto.total}">
+                  <li class="page-item"><a class="page-link" th:text="${commentPageDto.page}+4" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.page + 3}|}"></a></li>
+              </th:block>
+              <th:block th:if="${commentPageDto.page}+4 <= ${commentPageDto.total}">
+                  <li class="page-item"><a class="page-link" th:text="#{getBoard.comment.pagination.next}" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.page + 4}|}"></a></li>
+                  <li class="page-item"><a class="page-link" th:text="#{getBoard.comment.pagination.end}" th:href="@{|/board/getBoard/${boardId}/${commentPageDto.total}|}"></a></li>
+              </th:block>
+          </ul>
+      </div>
+
+      <!-- comment form -->
+      <div class="comment">
+          <form th:action="@{|/comment/${boardId}|}" method="post" th:object="${commentDto}">
+              <div class="container-fluid">
+                  <h4 th:text="#{getBoard.comment.label}"></h4>
+                  <th:block th:if="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="text" class="form-control form-control-sm" readonly
+                                   th:value="${#authentication.getPrincipal().getNickname()}">
+                        </div>
+                    </div>
+                  </th:block>
+                  <th:block th:unless="${#authorization.getAuthentication() != null && #authorization.expr('isAuthenticated()')}">
+                      <div class="row">
+                          <div class="col-4">
+                              <label for="comment-nickname" th:text="#{getBoard.comment.nickname}"></label>
+                              <input type="text" id="comment-nickname" class="form-control form-control-sm" th:field="*{nickname}" required>
+                          </div>
+                          <div class="col-4">
+                              <label for="comment-password" th:text="#{getBoard.comment.password}"></label>
+                              <input type="text" id="comment-password" class="form-control form-control-sm" th:field="*{password}" required>
+                          </div>
+                      </div>
+                  </th:block>
+                  <div class="row" style="margin-top: 10px;">
+                      <div class="col-10">
+                          <textarea id="comment-content" class="form-control" rows="2" style="resize: none;" required
+                          th:field="*{content}"></textarea>
+                      </div>
+                      <div class="col-2">
+                          <button type="submit" th:text="#{getBoard.comment.submit}" class="btn btn-info"></button>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+</body>
+
+</html>

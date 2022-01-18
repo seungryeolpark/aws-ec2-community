@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>
+  <!-- css -->
+
+  <!-- js -->
+  <script th:src="@{//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js}"></script>
+  <style>
+    .container {
+      margin-top: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div th:replace="./fragment/mainHeader.html :: header"></div>
+  <div class="container">
+    <div class="btn-board">
+      <div class="float-left">
+      </div>
+      <div class="float-right">
+        <button class="btn btn-light border border-dark" th:text="#{board.write}"
+        th:onclick="|location.href='@{/board/post}'|"></button>
+      </div>
+    </div>
+    <div class="well">
+      <table class="table">
+        <thead>
+        <tr>
+          <th th:text="#{board.number}"></th>
+          <th th:text="#{board.title}"></th>
+          <th th:text="#{board.writer}"></th>
+          <th th:text="#{board.createDate}"></th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr th:each="boardDTO : ${boardDTOList}">
+            <td th:text="${boardDTO.boardId}"></td>
+            <td ><a class="text-dark" th:text="${boardDTO.title}" th:href="@{|/board/getBoard/${boardDTO.boardId}|}"></a></td>
+            <td th:text="${boardDTO.nickname}"></td>
+            <td th:text="${boardDTO.createTime}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <ul class="pagination">
+        <th:block th:if="${boardPageDto.page} > 0">
+          <li class="page-item"><a class="page-link" th:text="#{board.start}" th:href="@{/board(page=0)}"></a></li>
+          <li class="page-item"><a class="page-link" th:text="#{board.prev}" th:href="@{/board(page=${boardPageDto.page}-4)}"></a></li>
+        </th:block>
+        <th:block th:if="${boardPageDto.page} < ${boardPageDto.total}">
+          <li class="page-item"><a class="page-link" th:text="${boardPageDto.page}+1" th:href="@{/board(page=${boardPageDto.page})}"></a></li>
+        </th:block>
+        <th:block th:if="${boardPageDto.page}+1 < ${boardPageDto.total}">
+          <li class="page-item"><a class="page-link" th:text="${boardPageDto.page}+2" th:href="@{/board(page=${boardPageDto.page}+1)}"></a></li>
+        </th:block>
+        <th:block th:if="${boardPageDto.page}+2 < ${boardPageDto.total}">
+          <li class="page-item"><a class="page-link" th:text="${boardPageDto.page}+3" th:href="@{/board(page=${boardPageDto.page}+2)}"></a></li>
+        </th:block>
+        <th:block th:if="${boardPageDto.page}+3 < ${boardPageDto.total}">
+          <li class="page-item"><a class="page-link" th:text="${boardPageDto.page}+4" th:href="@{/board(page=${boardPageDto.page}+3)}"></a></li>
+        </th:block>
+        <th:block th:if="${boardPageDto.page}+4 < ${boardPageDto.total}">
+          <li class="page-item"><a class="page-link" th:text="#{board.next}" th:href="@{/board(page=${boardPageDto.page}+4)}"></a></li>
+          <li class="page-item"><a class="page-link" th:text="#{board.end}" th:href="@{/board(page=${boardPageDto.total})}"></a></li>
+        </th:block>
+      </ul>
+    </div>
+    <div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Delete Confirmation</h3>
+      </div>
+      <div class="modal-body">
+        <p class="error-text">Are you sure you want to delete the user?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-danger" data-dismiss="modal">Delete</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

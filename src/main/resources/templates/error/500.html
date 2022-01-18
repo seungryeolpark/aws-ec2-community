@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>500대 에러</title>
+</head>
+<body>
+<th:block th:if="${message} == null">
+    서버에 오류가 생겼습니다
+</th:block>
+<th:block th:unless="${message} == null">
+    <span th:text="${message}"></span>
+</th:block>
+</body>
+</html>

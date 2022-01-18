@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>
+  <div th:replace="./fragment/mainHeader.html :: sweetalert"></div>
+
+  <script th:src="@{/ckeditor5/build/ckeditor.js}"></script>
+
+  <!-- inline -->
+  <!-- css -->
+  <style>
+    .container {
+      margin-top: 100px;
+    }
+
+    .ck-editor__editable {
+      min-height: 500px;
+      max-height: 500px;
+    }
+
+    .ck-editor__nested-editable {
+      display: none;
+    }
+  </style>
+  <!-- js -->
+  <th:block th:if="${errorMessage} != null">
+    <script>
+        $().ready(function () {
+          Swal.fire({
+            icon: 'error',
+            text: '[[${errorMessage}]]',
+          });
+        });
+    </script>
+  </th:block>
+</head>
+<body>
+<div th:replace="./fragment/mainHeader.html :: header"></div>
+<div class="container">
+  <h4 th:text="#{post.label}"></h4>
+  <hr>
+  <form th:action="@{/board/edit}" th:object="${postBoardDto}" method="post">
+    <input type="hidden" name="boardId" th:value="${boardId}">
+    <label for="title" th:text="#{post.title}"></label>
+    <input type="text" id="title" th:field="*{title}" class="form-control" >
+
+    <th:block th:unless="${#authorization.expr('isAuthenticated()')}">
+      <div class="row">
+        <div class="col">
+          <label for="nickname" th:text="#{post.nickname}"></label>
+          <input type="text" id="nickname" th:field="*{nickname}" class="form-control">
+        </div>
+        <div class="col">
+          <label for="password" th:text="#{post.password}"></label>
+          <input type="password" id="password" th:field="*{password}" class="form-control">
+        </div>
+      </div>
+    </th:block>
+
+    <label for="content" th:text="#{post.content}"></label>
+    <textarea id="content" th:field="*{content}" class="form-control editor"></textarea>
+    <div class="float-right">
+      <button type="submit" class="btn btn-primary" th:text="#{post.submit}"></button>
+    </div>
+  </form>
+  <script type="module" th:inline="javascript">
+      var token = $( "meta[name='_csrf']" ).attr('content');
+      var id = [[ ${postBoardDto.uuid} ]];
+      ClassicEditor
+          .create( document.querySelector( '.editor' ), {
+          ckfinder: {
+                  uploadUrl: '/post/upload?_csrf=' + token + '&id=' + id
+              },
+          toolbar: {
+              items: [
+                  'heading',
+                  '|',
+                  'bold',
+                  'italic',
+                  'link',
+                  'bulletedList',
+                  'numberedList',
+                  '|',
+                  'outdent',
+                  'indent',
+                  '|',
+                  'imageUpload',
+                  'blockQuote',
+                  'insertTable',
+                  'mediaEmbed',
+                  'undo',
+                  'redo'
+              ]
+          },
+          language: 'ko',
+          image: {
+              toolbar: [
+                  'imageTextAlternative',
+                  'imageStyle:inline',
+                  'imageStyle:block',
+                  'imageStyle:side',
+              ]
+          },
+
+          table: {
+              contentToolbar: [
+                  'tableColumn',
+                  'tableRow',
+                  'mergeTableCells'
+              ]
+          },
+              licenseKey: ''
+          } )
+          .then( editor => {
+              window.editor = editor;
+          } )
+          .catch( error => {
+              console.error( 'Oops, something went wrong!' );
+              console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
+              console.warn( 'Build id: 7qcr96d8p5hv-nohdljl880ze' );
+              console.error( error );
+          } );
+    </script>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="./fragment/mainHeader.html :: CSS,JS"></div>
+  <div th:replace="./fragment/mainHeader.html :: sweetalert"></div>
+  <link th:href="@{/css/signup.css}" rel="stylesheet">
+  <link th:href="@{/css/error.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="./fragment/mainHeader.html :: header"></div>
+  <div class="container" id="wrap">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <form action="/signup" method="post" th:action th:object="${signupMemberDto}" accept-charset="utf-8" class="form" role="form">
+          <legend th:text="#{signup.label}"></legend>
+          <div>
+            <label for="email" th:text="#{signup.email}"></label>
+            <input type="email" id="email" th:field="*{email}" th:errorclass="field-error" class="form-control" th:placeholder="#{signup.email.ph}" required>
+            <div class="field-error" th:errors="*{email}"></div>
+          </div>
+          <div class="row">
+            <div class="col-8">
+              <label for="email_auth" th:text="#{signup.email.auth}"></label>
+              <input type="text" id="email_auth" th:field="*{emailAuth}" th:errorclass="field-error" class="form-control" required>
+              <div class="field-error" th:errors="*{emailAuth}"></div>
+            </div>
+            <div class="col-4">
+              <button id="email_auth_button" class="btn btn-info" type="button" style="margin-top: 30px;" th:text="#{signup.email.auth.button}"></button>
+            </div>
+          </div>
+          <div>
+            <label for="nickname" th:text="#{signup.nickname}"></label>
+            <input type="text" id="nickname" th:field="*{nickname}" th:errorclass="field-error" class="form-control" th:placeholder="#{signup.nickname.ph}" required>
+            <div class="field-error" th:errors="*{nickname}"></div>
+          </div>
+          <div>
+            <label for="password" th:text="#{signup.password}"></label>
+            <input type="password" id="password" th:field="*{password}" th:errorclass="field-error" class="form-control" th:placeholder="#{signup.password.ph}" required>
+            <div class="field-error" th:errors="*{password}"></div>
+          </div>
+          <div>
+            <label for="confirmPassword" th:text="#{signup.confirmPassword}"></label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" th:errorclass="field-error" class="form-control" th:placeholder="#{signup.confirmPassword.ph}" required>
+            <div class="field-error" th:errors="*{confirmPassword}"></div>
+          </div>
+
+          <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit" th:text="#{signup.submit}"></button>
+        </form>
+      </div>
+    </div>
+  </div>
+<script type="text/javascript" src="/js/login/signup.js"></script>
+</body>
+</html>
