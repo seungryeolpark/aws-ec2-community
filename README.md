@@ -1,6 +1,5 @@
 # aws-ec2-community
-**AWS EC2** 를 이용한 게시판  
-[링크](http://13.124.173.100/)
+**AWS EC2** 를 이용한 게시판
 
 ## 개발 환경
 ### Back-end
