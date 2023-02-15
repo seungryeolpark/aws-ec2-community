@@ -48,6 +48,5 @@
 
 + Spring Data JPA, MySQL 를 이용한 게시판 글 CRUD 구현
   + 게시판 글 댓글 CRUD 구현 (대댓글도 구현)
-  + ckeditor5 를 이용하여 게시판 글 이미지 업로드 구현
 + spring security 를 이용한 로그인 시스템
 + redis, spring mail 를 이용한 인증메일 시스템
